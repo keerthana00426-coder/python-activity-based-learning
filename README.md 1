@@ -1,0 +1,98 @@
+# python-activity-based-learning
+Case Study #2: Progressive Electricity Billing
+Problem Statement
+Design a Python program that computes monthly household electricity bills using progressive consumption slabs, a fixed charge, a percentage surcharge, and a low-usage rebate. The program must compare bills across consecutive months and flag any unusual month-over-month cost increase.   
+Python Activity1 case studies.pdf
+
+Objectives
+Calculate slab-wise energy charges accurately for multi-month consumption data.
+
+Apply fixed charges, surcharges, and rebates under defined conditions.
+
+Detect and report unusual percentage jumps between consecutive monthly bills.
+
+Assumptions
+Slab 1: first 100 units @ Rs. 3.00/unit; Slab 2: next 100 units (101–200) @ Rs. 4.50/unit; Slab 3: units above 200 @ Rs. 6.50/unit.
+
+Fixed charge is Rs. 100.00 per month; surcharge is 5% on (energy_charge + fixed_charge).
+
+A Rs. 50.00 rebate applies when monthly consumption is 150 units or fewer.
+
+An increase of more than 30% over the immediately preceding month's bill is flagged as an unusual increase.
+
+Algorithm
+Start and store monthly (month, units) tuples in a list along with tariff constants.
+
+For each month, split units across the three consumption slabs to compute energy_charge.
+
+Add fixed_charge, apply the 5% surcharge, subtract the Rs. 50.00 rebate if units <= 150, and round to two decimal places.
+
+Store (month, units, total_bill) in a bills list.
+
+Loop through bills; from index 1 onward, compute percentage change from the previous month and mark "UNUSUAL INCREASE" if above 30%.
+
+Display each month's units, bill amount, and status, then end.
+
+Flowchart
+Plaintext
+[Start] --> [Load monthly_units & tariff rules]
+  --> [Loop: (month, units) in monthly_units]
+  --> [Compute slab 1, 2, 3 charges + fixed + 5% surcharge - rebate]
+  --> [Append (month, units, total_bill) to bills]
+  --> {More months?} --Yes--> [Loop]
+  --No--> [Loop index i from 0 to len(bills)-1]
+  --> {i > 0 and pct_change > 30%?} --Yes--> [Mark UNUSUAL INCREASE]
+  --No--> [Mark Normal]
+  --> [Print monthly summary] --> [End]
+Pseudocode
+Plaintext
+START
+  SET monthly_units = [("Jan", 120), ("Feb", 135), ("Mar", 260), ("Apr", 140)]
+  SET fixed_charge = 100.0, surcharge_rate = 0.05, rebate_low_usage = 50.0, spike_threshold = 0.30
+  CREATE empty list bills
+
+  FOR each (month, units) IN monthly_units DO
+    SET energy_charge = 0.0, remaining = units
+    IF remaining > 0 THEN
+      slab1 = MIN(remaining, 100)
+      energy_charge = energy_charge + slab1 * 3.0
+      remaining = remaining - slab1
+    END IF
+    IF remaining > 0 THEN
+      slab2 = MIN(remaining, 100)
+      energy_charge = energy_charge + slab2 * 4.5
+      remaining = remaining - slab2
+    END IF
+    IF remaining > 0 THEN
+      energy_charge = energy_charge + remaining * 6.5
+    END IF
+    subtotal = energy_charge + fixed_charge
+    surcharge = subtotal * surcharge_rate
+    rebate = rebate_low_usage IF units <= 150 ELSE 0.0
+    total_bill = ROUND(subtotal + surcharge - rebate, 2)
+    APPEND (month, units, total_bill) TO bills
+  END FOR
+
+  FOR i = 0 TO LENGTH(bills) - 1 DO
+    SET status = "Normal"
+    IF i > 0 AND bills[i-1].total_bill > 0 THEN
+      pct_change = (bills[i].total_bill - bills[i-1].total_bill) / bills[i-1].total_bill
+      IF pct_change > spike_threshold THEN
+        status = "UNUSUAL INCREASE"
+      END IF
+    END IF
+    PRINT bills[i].month, bills[i].units, bills[i].total_bill, status
+  END FOR
+END
+Test Cases
+Case ID	Input (month, units)	Expected Behavior / Output
+TC1	("Jan", 120)	Slab 1 (300) + Slab 2 (90) + Fixed (100) = 490; +5% (24.5) - 50 rebate = Rs. 464.50, Normal
+TC2	("Feb", 135)	Rs. 518.18, Normal (+11.55% over Jan)
+TC3	("Mar", 260)	High usage across all 3 slabs, no rebate; flags UNUSUAL INCREASE (>30% jump over Feb)
+TC4	("Apr", 140)	Rebate re-applied (units <= 150), bill drops sharply, marked Normal
+Conclusion
+The program demonstrates slab-based conditional logic, list/tuple storage, and sequential comparison to turn raw meter readings into actionable monthly billing insights. A practical limitation is that tariff slabs and seasonal anomalies are hardcoded rather than loaded from an external file.
+
+
+sholds to match your faculty's handout?   
+Python Activity1 case studies.pdf
