@@ -1,0 +1,32 @@
+Case Study #4: Employee Payroll and Deduction AnalysisProblem StatementBuild a payroll calculation program that computes gross salary from basic pay, allowances, overtime, and incentives, applies progressive deductions, and formats a clear salary statement for each employee.   ObjectivesCompute overtime earnings and total gross salary accurately per employee.Apply fixed provident fund (PF) and progressive income tax/deduction slabs.Display a structured, readable salary statement for every employee record.AssumptionsOvertime pay equals ot_hours * ot_rate.Gross salary equals basic + hra + da + overtime_pay + incentive.PF deduction is 12% of basic pay.Progressive tax deduction on gross: 5% if gross <= 40000, 10% if 40000 < gross <= 75000, and 15% if gross > 75000.AlgorithmStart with a list of employee tuples containing ID, name, basic pay, HRA, DA, overtime hours, overtime rate, and incentive.For each employee, unpack the tuple and calculate overtime_pay and gross.Compute pf (12% of basic) and select the progressive tax rate based on gross.Compute total_deductions = pf + tax and net_pay = gross - total_deductions.Print a formatted salary statement showing all components, gross pay, deductions, and net pay.FlowchartPlaintext[Start] --> [Define employees list]
+  --> [Loop: unpack employee tuple]
+  --> [overtime_pay = ot_hours * ot_rate; gross = basic + hra + da + overtime_pay + incentive]
+  --> [pf = basic * 0.12]
+  --> {gross <= 40000?} --Yes--> [tax = gross * 0.05]
+  --No--> {gross <= 75000?} --Yes--> [tax = gross * 0.10]
+  --No--> [tax = gross * 0.15]
+  --> [net_pay = gross - (pf + tax)]
+  --> [Print salary statement]
+  --> {More employees?} --Yes--> [Loop] --No--> [End]
+PseudocodePlaintextSTART
+  SET employees = [
+    ("E101", "Aarav", 30000.0, 8000.0, 4500.0, 10, 250.0, 2000.0),
+    ("E102", "Diya", 55000.0, 15000.0, 8250.0, 5, 350.0, 4000.0)
+  ]
+  FOR each (emp_id, name, basic, hra, da, ot_hours, ot_rate, incentive) IN employees DO
+    overtime_pay = ot_hours * ot_rate
+    gross = basic + hra + da + overtime_pay + incentive
+    pf = basic * 0.12
+    IF gross <= 40000 THEN
+      tax = gross * 0.05
+    ELSE IF gross <= 75000 THEN
+      tax = gross * 0.10
+    ELSE
+      tax = gross * 0.15
+    END IF
+    total_deductions = pf + tax
+    net_pay = gross - total_deductions
+    PRINT formatted salary statement for emp_id, name, gross, total_deductions, net_pay
+  END FOR
+END
+Test CasesCase IDInput EmployeeExpected Behavior / OutputTC1E101 (gross = 47,000.00)Overtime 2500.00, PF 3600.00, 10% tax 4700.00, Net 38700.00TC2E102 (gross = 84,000.00)Overtime 1750.00, PF 6600.00, 15% tax 12600.00, Net 64800.00TC3Hypothetical low earner (gross = 35,000.00)Applies 5% tax slab instead of 10% or 15%ConclusionTuple unpacking, arithmetic operators, and if-elif-else branching make payroll computation clean and deterministic. Adding statutory caps (such as PF ceilings) would make it closer to real-world HR systems.
